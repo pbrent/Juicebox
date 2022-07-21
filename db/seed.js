@@ -1,4 +1,13 @@
-const { client, getAllUsers, createUser, updateUser } = require("./index");
+const { client, 
+  getAllUsers, 
+  createUser, 
+  updateUser,
+  getUserById,
+  createPost,
+  updatePost,
+  getAllPosts,
+  getPostsByUser 
+} = require("./index");
 
 async function dropTables() {
   try {
@@ -63,6 +72,33 @@ async function createInitialUsers() {
   }
 }
 
+async function createInitialPosts() {
+  try {
+    const [albert, sandra, glamgal] = await getAllUsers();
+
+    await createPost({
+      authorId: albert.id,
+      title: "First Post",
+      content: "This is my first post."
+    });
+
+    await createPost({
+      authorId: sandra.id,
+      title: "First Post",
+      content: "I'm Sandra and this is first post. I hope you like it."
+    });
+    
+    await createPost({
+      authorId: glamgal.id,
+      title: "First Post",
+      content: "Hey I'm Glamour and this is my first post. I hope it's pretty!"
+    });
+
+  } catch (error) {
+    throw error
+  }
+}
+
 async function rebuildDB() {
   try {
     client.connect();
@@ -70,10 +106,13 @@ async function rebuildDB() {
     await dropTables();
     await createTables();
     await createInitialUsers();
+    await createInitialPosts();
   } catch (error) {
     throw error;
   }
 }
+
+
 
 async function testDB() {
   try {
@@ -87,6 +126,21 @@ async function testDB() {
       location: "Lesterville, KY"
     });
     console.log("Result:", updateUserResult);
+    console.log("Calling getAllPosts");
+    const posts = await getAllPosts();
+    console.log("Result:", posts);
+
+    console.log("Calling updatePost on posts[0]");
+    const updatePostResult = await updatePost(posts[0].id, {
+      title: "New Title",
+      content: "Updated Content"
+    });
+    console.log("Result:", updatePostResult);
+
+    console.log("Calling getUserById with 1");
+    const albert = await getUserById(1);
+    console.log("Result:", albert);
+
     console.log("Finished database tests!");
   } catch (error) {
     console.error("Error testing database!");
