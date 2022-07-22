@@ -135,6 +135,12 @@ async function getUserById(userId) {
   }
 }
 
+// async function createTags(tagList) {
+//   if (tagList.length === 0) {
+//     return;
+//   }
+// }
+
 module.exports = {
   client,
   createUser,
