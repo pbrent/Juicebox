@@ -30,6 +30,12 @@ async function getAllUsers() {
   return rows;
 }
 
+async function getAllTags() {
+  const { rows } = await client.query(`
+  SELECT * from tags;`);
+  return rows; 
+}
+
 async function updateUser(id, fields = {}) {
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
@@ -324,6 +330,7 @@ module.exports = {
   createPost,
   updatePost,
   getAllPosts,
+  getAllTags,
   getPostsByUser,
   createTags,
   createPostTag,
